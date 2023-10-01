@@ -1,5 +1,29 @@
 from pygame import *
 
+class GameSprite(sprite.Sprite):
+    def __init__(self, player_image, player_x, player_y, player_speed, width, height):
+        super().__init__()
+        self.image = transform.scale(image.load(player_image), (width, height))
+        self.speed = player_speed
+        self.rect = self.image.get_rect()
+        self.rect.x = player_x
+        self.rect.y = player_y
+    def reset(self):
+        window.blit(self.image, (self.rect.x, self.rect.y))
+
+class Player(GameSprite):
+    def update_l(self):
+        keys_pressed = key.get_pressed()
+        if keys_pressed[K_w] and self.rect.y > 5:
+            self.rect.y -= self.speed
+        if keys_pressed[K_s] and self.rect.y < win_width - 80:
+            self.rect.y += self.speed
+    def update_r(self):
+        if keys_pressed[K_UP] and self.rect.y > 5:
+            self.rect.y -= self.speed
+        if keys_pressed[K_DOWN] and self.rect.y < win_width - 80:
+            self.rect.y += self.speed
+
 win_width = 700
 win_height = 500
 window = display.set_mode((700, 500))
@@ -7,6 +31,12 @@ display.set_caption('Пинг-понг')
 
 back = (45, 207, 147)
 window.fill(back)
+
+ball = GameSprite(225, 425, 'ball.png', 50, 50)
+ball.draw()
+
+platform = GameSprite(200, 475, 'platform.png', 100, 30)
+platform.draw()
 
 game = True 
 clock = time.Clock()
